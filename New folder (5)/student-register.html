@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Registration | Chinmaya's Library</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 35px 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: Georgia, "Times New Roman", serif;
+            color: #402817;
+
+            background:
+                    linear-gradient(
+                            rgba(35, 20, 10, 0.72),
+                            rgba(35, 20, 10, 0.82)
+                    ),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=90");
+
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .registration-container {
+            width: 100%;
+            max-width: 560px;
+
+            background: linear-gradient(
+                    145deg,
+                    #fff9e9,
+                    #f0dfb9
+            );
+
+            border: 2px solid #c9a044;
+            border-radius: 20px;
+
+            padding: 35px 40px;
+
+            box-shadow:
+                    0 20px 55px rgba(0, 0, 0, 0.55),
+                    inset 0 0 25px rgba(132, 89, 36, 0.08);
+
+            animation: appear 0.65s ease;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .library-icon {
+            width: 78px;
+            height: 78px;
+
+            margin: 0 auto 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                    135deg,
+                    #4b2e16,
+                    #805324
+            );
+
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+
+            font-size: 38px;
+
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        h1 {
+            margin: 0;
+            text-align: center;
+
+            font-size: 29px;
+            color: #573719;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin: 10px 0 25px;
+
+            color: #80613b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .divider {
+            height: 2px;
+            width: 100%;
+
+            margin: 20px 0 25px;
+
+            background: linear-gradient(
+                    to right,
+                    transparent,
+                    #bd9137,
+                    transparent
+            );
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+
+            color: #573719;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+            font-size: 17px;
+
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px 13px 43px;
+
+            background: #fffdf6;
+
+            border: 1px solid #c3a16a;
+            border-radius: 10px;
+
+            outline: none;
+
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #402817;
+
+            transition: 0.25s;
+        }
+
+        input:focus {
+            border-color: #805324;
+
+            box-shadow:
+                    0 0 0 3px rgba(197, 155, 50, 0.20);
+
+            background: #ffffff;
+        }
+
+        input::placeholder {
+            color: #a99a83;
+        }
+
+        .password-wrapper input {
+            padding-right: 48px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: none;
+            background: transparent;
+
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 15px;
+
+            margin-top: 8px;
+
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+
+            background: linear-gradient(
+                    135deg,
+                    #4b2e16,
+                    #805324
+            );
+
+            color: #fff8dc;
+
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+        .register-button:hover {
+            background: linear-gradient(
+                    135deg,
+                    #805324,
+                    #a8782e
+            );
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 8px 18px rgba(75, 46, 22, 0.25);
+        }
+
+        .register-button:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 18px;
+
+            border-radius: 9px;
+            text-align: center;
+
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error-message {
+            color: #842626;
+            background: #f8dddd;
+            border: 1px solid #d99a9a;
+        }
+
+        .success-message {
+            color: #285b2a;
+            background: #e0f1d9;
+            border: 1px solid #a2c795;
+        }
+
+        .login-link {
+            margin-top: 22px;
+            text-align: center;
+
+            font-size: 14px;
+            color: #725437;
+        }
+
+        .login-link a {
+            color: #70451f;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            color: #a16b23;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #80613b;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .back-link:hover {
+            color: #4b2e16;
+        }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+
+            color: #8a704c;
+            font-size: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .registration-container {
+                padding: 28px 22px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="registration-container">
+
+    <div class="library-icon">📚</div>
+
+    <h1>Student Registration</h1>
+
+    <p class="subtitle">
+        Join Chinmaya's Library and begin your journey
+        into the world of knowledge.
+    </p>
+
+    <div class="divider"></div>
+
+    <!-- Error message -->
+    <div
+            th:if="${error}"
+            class="message error-message"
+            th:text="${error}">
+    </div>
+
+    <!-- Success message -->
+    <div
+            th:if="${success}"
+            class="message success-message"
+            th:text="${success}">
+    </div>
+
+    <!-- Registration form -->
+    <form
+            th:action="@{/student-register}"
+            method="post"
+            id="registrationForm">
+
+        <div class="form-group">
+            <label for="name">Full Name</label>
+
+            <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+
+                <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        maxlength="100"
+                        required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+
+            <div class="input-wrapper">
+                <span class="input-icon">✉️</span>
+
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                        maxlength="150"
+                        required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Mobile Number</label>
+
+            <div class="input-wrapper">
+                <span class="input-icon">📱</span>
+
+                <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your mobile number"
+                        autocomplete="tel"
+                        maxlength="15"
+                        required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+
+            <div class="input-wrapper password-wrapper">
+                <span class="input-icon">🔒</span>
+
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        minlength="4"
+                        required>
+
+                <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword('password', this)"
+                        aria-label="Show password">
+                    👁️
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+
+            <div class="input-wrapper password-wrapper">
+                <span class="input-icon">🔐</span>
+
+                <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Enter your password again"
+                        autocomplete="new-password"
+                        minlength="4"
+                        required>
+
+                <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword('confirmPassword', this)"
+                        aria-label="Show confirm password">
+                    👁️
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="register-button">
+            ✨ Create Student Account
+        </button>
+
+    </form>
+
+    <div class="login-link">
+        Already registered?
+        <a th:href="@{/student-login}">Login here</a>
+    </div>
+
+    <a th:href="@{/login}" class="back-link">
+        ← Back to Login Options
+    </a>
+
+    <div class="footer">
+        © 2026 Chinmaya's Library · Every book opens a new world
+    </div>
+
+</div>
+
+<script>
+    function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+
+        if (input.type === "password") {
+            input.type = "text";
+            button.textContent = "🙈";
+            button.setAttribute("aria-label", "Hide password");
+        } else {
+            input.type = "password";
+            button.textContent = "👁️";
+            button.setAttribute("aria-label", "Show password");
+        }
+    }
+
+    document.getElementById("registrationForm")
+        .addEventListener("submit", function (event) {
+
+            const password =
+                document.getElementById("password").value;
+
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                event.preventDefault();
+                alert("Passwords do not match. Please try again.");
+            }
+        });
+</script>
+
+</body>
+</html>

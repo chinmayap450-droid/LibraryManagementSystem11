@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Library Reports | Library Management System</title>
+
+    <style>
+
+        * {
+            box-sizing:border-box;
+        }
+
+        body {
+            margin:0;
+            min-height:100vh;
+            font-family:Georgia,"Times New Roman",serif;
+            color:#352315;
+
+            background:
+                    linear-gradient(rgba(39,20,8,.72),rgba(39,20,8,.78)),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=85")
+                    center/cover fixed no-repeat;
+        }
+
+        .page {
+            width:min(1500px,94%);
+            margin:auto;
+            padding:30px 0 60px;
+        }
+
+        .topbar {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            flex-wrap:wrap;
+            padding:18px 22px;
+            margin-bottom:25px;
+            border-radius:16px;
+            background:rgba(45,27,14,.96);
+            border:1px solid rgba(212,168,79,.5);
+            box-shadow:0 12px 35px rgba(0,0,0,.3);
+        }
+
+        .brand h1 {
+            margin:0;
+            color:#fff3d0;
+            font-size:clamp(25px,4vw,38px);
+        }
+
+        .brand p {
+            margin:6px 0 0;
+            color:#e8d4aa;
+        }
+
+        .nav-buttons {
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .nav-btn {
+            padding:11px 17px;
+            border-radius:9px;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .back {
+            background:#6b4324;
+            color:#fff2cc;
+            border:1px solid #b98a43;
+        }
+
+        .logout {
+            background:#84372e;
+            color:white;
+        }
+
+        .summary-grid {
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:18px;
+            margin-bottom:24px;
+        }
+
+        .stat-card {
+            position:relative;
+            overflow:hidden;
+            padding:22px;
+            border-radius:17px;
+            background:linear-gradient(135deg,#fff8e8,#ead4a4);
+            border:1px solid #cba967;
+            box-shadow:0 12px 28px rgba(39,22,10,.28);
+            transition:.3s;
+        }
+
+        .stat-card:hover {
+            transform:translateY(-7px);
+            box-shadow:0 18px 35px rgba(39,22,10,.4);
+        }
+
+        .stat-card:after {
+            content:"📜";
+            position:absolute;
+            right:15px;
+            bottom:5px;
+            font-size:42px;
+            opacity:.12;
+        }
+
+        .stat-card p {
+            margin:0 0 12px;
+            color:#765b3d;
+            font-weight:bold;
+        }
+
+        .stat-card h2 {
+            margin:0;
+            color:#6b3f1f;
+            font-size:32px;
+        }
+
+        .panel {
+            padding:25px;
+            margin-bottom:24px;
+            border-radius:18px;
+            background:linear-gradient(rgba(255,248,232,.98),rgba(247,236,210,.98));
+            border:1px solid #cba967;
+            box-shadow:0 15px 35px rgba(39,22,10,.28);
+        }
+
+        .panel h2 {
+            margin-top:0;
+            color:#6b3f1f;
+        }
+
+        .panel h2:after {
+            content:"";
+            display:block;
+            width:70px;
+            height:3px;
+            margin-top:8px;
+            background:#d4a84f;
+        }
+
+        .search-box {
+            display:flex;
+            flex-wrap:wrap;
+            gap:10px;
+            margin-bottom:20px;
+        }
+
+        .search-box input {
+            flex:1;
+            min-width:240px;
+            padding:13px 14px;
+            border:1px solid #c5a873;
+            border-radius:9px;
+            background:#fffdf5;
+            color:#352315;
+            font-family:inherit;
+        }
+
+        .search-box input:focus {
+            outline:none;
+            border-color:#d4a84f;
+            box-shadow:0 0 0 3px rgba(212,168,79,.2);
+        }
+
+        button,
+        .action-link {
+            padding:12px 18px;
+            border:0;
+            border-radius:9px;
+            font-family:inherit;
+            font-weight:bold;
+            cursor:pointer;
+            text-decoration:none;
+            transition:.25s;
+        }
+
+        button:hover,
+        .action-link:hover {
+            transform:translateY(-3px);
+        }
+
+        .search {
+            background:#6b3f1f;
+            color:white;
+        }
+
+        .view {
+            background:#765b3d;
+            color:white;
+        }
+
+        .table-wrap {
+            overflow-x:auto;
+            border:1px solid #d0b77e;
+            border-radius:12px;
+        }
+
+        table {
+            width:100%;
+            min-width:1100px;
+            border-collapse:collapse;
+        }
+
+        th {
+            padding:15px 12px;
+            background:#5a351b;
+            color:#ffeab4;
+            text-align:left;
+        }
+
+        td {
+            padding:13px 12px;
+            border-bottom:1px solid #dfc99b;
+            background:rgba(255,249,233,.8);
+        }
+
+        tr:hover td {
+            background:#fff1c9;
+        }
+
+        .status-issued {
+            display:inline-block;
+            padding:5px 9px;
+            border-radius:20px;
+            background:#f2dfb1;
+            color:#8a5a0b;
+            font-weight:bold;
+        }
+
+        .status-returned {
+            display:inline-block;
+            padding:5px 9px;
+            border-radius:20px;
+            background:#dcebd7;
+            color:#35653a;
+            font-weight:bold;
+        }
+
+        .empty {
+            text-align:center;
+            padding:25px !important;
+        }
+
+        .note {
+            margin-top:17px;
+            color:#765f43;
+            font-size:13px;
+            line-height:1.6;
+        }
+
+        @media(max-width:1050px) {
+            .summary-grid {
+                grid-template-columns:repeat(2,1fr);
+            }
+        }
+
+        @media(max-width:600px) {
+            .summary-grid {
+                grid-template-columns:1fr;
+            }
+
+            .panel {
+                padding:18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <h1>📊 Library Reports</h1>
+
+            <p>
+                Library statistics and book transaction history
+            </p>
+
+        </div>
+
+        <div class="nav-buttons">
+
+            <a href="/admin-dashboard"
+               class="nav-btn back">
+                ↩ Back to Dashboard
+            </a>
+
+            <a href="/logout"
+               class="nav-btn logout">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </header>
+
+    <section class="summary-grid">
+
+        <div class="stat-card">
+
+            <p>📚 Unique Book Titles</p>
+
+            <h2 th:text="${totalTitles}">
+                0
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <p>📖 Total Book Copies</p>
+
+            <h2 th:text="${totalCopies}">
+                0
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <p>📗 Available Copies</p>
+
+            <h2 th:text="${availableCopies}">
+                0
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <p>📕 Currently Issued</p>
+
+            <h2 th:text="${issuedBooks}">
+                0
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <p>↩ Returned Transactions</p>
+
+            <h2 th:text="${returnedBooks}">
+                0
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <p>🎓 Registered Students</p>
+
+            <h2 th:text="${totalStudents}">
+                0
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <p>👨‍🏫 Staff Members</p>
+
+            <h2 th:text="${totalStaff}">
+                0
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <p>💰 Total Recorded Fines</p>
+
+            <h2>
+                ₹<span th:text="${#numbers.formatDecimal(totalFines,1,2)}">
+0.00
+</span>
+            </h2>
+
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <h2>📜 Issue & Return History</h2>
+
+        <form action="/admin/reports"
+              method="get"
+              class="search-box">
+
+            <input type="text"
+                   name="search"
+                   th:value="${search}"
+                   placeholder="Search issue ID, student, book, or status">
+
+            <button type="submit"
+                    class="search">
+                🔍 Search
+            </button>
+
+            <a href="/admin/reports"
+               class="action-link view">
+                📋 View All
+            </a>
+
+        </form>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>Issue ID</th>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Book ID</th>
+                    <th>Book Title</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Fine (₹)</th>
+                    <th>Status</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:each="item : ${issueHistory}">
+
+                    <td th:text="${item['issue_id']}"></td>
+
+                    <td th:text="${item['student_id']}"></td>
+
+                    <td th:text="${item['student_name']}"></td>
+
+                    <td th:text="${item['book_id']}"></td>
+
+                    <td th:text="${item['book_title']}"></td>
+
+                    <td th:text="${item['issue_date']}"></td>
+
+                    <td th:text="${item['due_date']}"></td>
+
+                    <td th:text="${item['return_date'] != null ? item['return_date'] : '-'}"></td>
+
+                    <td th:text="${item['fine']}"></td>
+
+                    <td>
+
+<span th:if="${item['status'] == 'ISSUED'}"
+      class="status-issued"
+      th:text="${item['status']}">
+</span>
+
+                        <span th:if="${item['status'] == 'RETURNED'}"
+                              class="status-returned"
+                              th:text="${item['status']}">
+</span>
+
+                        <span th:if="${item['status'] != 'ISSUED' and item['status'] != 'RETURNED'}"
+                              th:text="${item['status']}">
+</span>
+
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(issueHistory)}">
+
+                    <td colspan="10"
+                        class="empty">
+
+                        📜 No issue or return records found.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p class="note">
+
+            💡 Statistics are calculated from the current database records.
+            Total recorded fines represent fines saved for returned books;
+            this is not necessarily the amount of money collected.
+
+        </p>
+
+    </section>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Choose Account | Library</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            background:
+                    linear-gradient(
+                            rgba(40, 20, 8, 0.68),
+                            rgba(40, 20, 8, 0.78)
+                    ),
+                    url("https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=2000&q=90")
+                    center / cover fixed;
+
+            color: white;
+        }
+
+        .page {
+            min-height: 100vh;
+
+            padding: 40px 20px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .back {
+            align-self: flex-start;
+
+            margin-left: 5%;
+
+            color: #ead8b9;
+
+            text-decoration: none;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            font-size: 14px;
+        }
+
+        .back:hover {
+            color: #ffc866;
+        }
+
+        .header {
+            text-align: center;
+
+            margin-top: 25px;
+
+            margin-bottom: 35px;
+        }
+
+        .book-icon {
+            font-size: 45px;
+
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 43px;
+
+            color: #fff0d0;
+
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #d8c5a6;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .cards {
+            width: 100%;
+            max-width: 1100px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+        }
+
+        .card {
+            min-height: 350px;
+
+            padding: 35px 28px;
+
+            text-align: center;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            rgba(255, 247, 226, 0.97),
+                            rgba(237, 218, 183, 0.96)
+                    );
+
+            border-radius: 15px;
+
+            color: #402510;
+
+            box-shadow:
+                    0 18px 45px rgba(0,0,0,.40);
+
+            border: 3px solid rgba(100, 60, 25, .45);
+
+            position: relative;
+
+            transition: .35s;
+
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 9px;
+
+            border: 1px solid rgba(100, 60, 25, .25);
+
+            border-radius: 10px;
+
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+
+            box-shadow:
+                    0 28px 60px rgba(0,0,0,.5);
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            font-size: 40px;
+        }
+
+        .admin .icon {
+            background: #ead4b1;
+        }
+
+        .staff .icon {
+            background: #cfe3d2;
+        }
+
+        .student .icon {
+            background: #d5e4f3;
+        }
+
+        .card h2 {
+            font-size: 28px;
+
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            color: #654a32;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            min-height: 70px;
+        }
+
+        .card a {
+            display: inline-block;
+
+            margin-top: 25px;
+
+            padding: 13px 27px;
+
+            border-radius: 25px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            font-weight: 700;
+
+            transition: .3s;
+        }
+
+        .admin h2 {
+            color: #6e3513;
+        }
+
+        .admin a {
+            background: #783c13;
+        }
+
+        .staff h2 {
+            color: #17633b;
+        }
+
+        .staff a {
+            background: #147244;
+        }
+
+        .student h2 {
+            color: #174f79;
+        }
+
+        .student a {
+            background: #176ba3;
+        }
+
+        .card a:hover {
+            transform: scale(1.06);
+        }
+
+        .footer {
+            margin-top: 35px;
+
+            color: #d3c0a3;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            font-size: 13px;
+        }
+
+        @media(max-width:850px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+
+                max-width: 430px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <a href="/" class="back">
+        ← Back to Home
+    </a>
+
+    <div class="header">
+
+        <div class="book-icon">📖</div>
+
+        <h1>Welcome to the Library</h1>
+
+        <p>
+            Choose your account type to continue
+        </p>
+
+    </div>
+
+    <div class="cards">
+
+        <!-- ADMIN -->
+
+        <div class="card admin">
+
+            <div class="icon">
+                👨‍💼
+            </div>
+
+            <h2>Admin</h2>
+
+            <p>
+                Manage the entire library,
+                staff, students and reports.
+            </p>
+
+            <a href="/admin-login">
+                Admin Library →
+            </a>
+
+        </div>
+
+        <!-- STAFF -->
+
+        <div class="card staff">
+
+            <div class="icon">
+                👨‍💻
+            </div>
+
+            <h2>Staff</h2>
+
+            <p>
+                Manage books, students,
+                issues and returns.
+            </p>
+
+            <a href="/staff-login">
+                Staff Login →
+            </a>
+
+        </div>
+
+        <!-- STUDENT -->
+
+        <div class="card student">
+
+            <div class="icon">
+                🎓
+            </div>
+
+            <h2>Student</h2>
+
+            <p>
+                Access your library account
+                and manage your books.
+            </p>
+
+            <a href="/student-login">
+                Student Login →
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Read • Learn • Grow
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Library Management</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            color: #402510;
+
+            background:
+                    linear-gradient(
+                            rgba(37, 19, 8, 0.78),
+                            rgba(37, 19, 8, 0.86)
+                    ),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2200&q=90")
+                    center / cover fixed;
+
+            background-attachment: fixed;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+
+            height: 76px;
+
+            padding: 0 5%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            background: rgba(42, 22, 9, 0.90);
+
+            border-bottom: 1px solid
+            rgba(230, 178, 91, 0.30);
+
+            box-shadow:
+                    0 5px 20px rgba(0,0,0,.30);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+        }
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: #fff0d0;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 21px;
+
+            font-weight: bold;
+        }
+
+        .logo-icon {
+
+            font-size: 32px;
+        }
+
+        .admin-label {
+
+            color: #dca34b;
+
+            font-size: 12px;
+
+            letter-spacing: 2px;
+
+            margin-left: 10px;
+        }
+
+        .logout {
+
+            padding: 10px 20px;
+
+            border-radius: 22px;
+
+            background: #74380f;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: .3s;
+        }
+
+        .logout:hover {
+
+            background: #512407;
+
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 1250px;
+
+            margin: auto;
+
+            padding: 45px 0 60px;
+        }
+
+        .welcome {
+
+            margin-bottom: 35px;
+
+            animation: fadeDown .7s ease;
+        }
+
+        .welcome-small {
+
+            color: #e1ad5d;
+
+            font-size: 13px;
+
+            letter-spacing: 4px;
+
+            margin-bottom: 8px;
+        }
+
+        .welcome h1 {
+
+            color: #fff0d2;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: clamp(36px, 5vw, 55px);
+
+            line-height: 1.05;
+
+            margin-bottom: 12px;
+
+            text-shadow:
+                    0 4px 15px rgba(0,0,0,.5);
+        }
+
+        .welcome p {
+
+            color: #ddcbb0;
+
+            max-width: 650px;
+
+            line-height: 1.6;
+
+            font-size: 15px;
+        }
+
+        /* =========================
+           DASHBOARD GRID
+        ========================= */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 22px;
+        }
+
+        /* =========================
+           CARDS
+        ========================= */
+
+        .dashboard-card {
+
+            min-height: 225px;
+
+            padding: 28px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 15px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            rgba(255, 247, 229, .98),
+                            rgba(232, 211, 174, .97)
+                    );
+
+            border: 3px solid
+            rgba(110, 67, 28, .40);
+
+            box-shadow:
+                    0 15px 35px rgba(0,0,0,.38);
+
+            transition:
+                    transform .3s,
+                    box-shadow .3s;
+
+            animation: cardAppear .7s ease both;
+        }
+
+        .dashboard-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 9px;
+
+            border: 1px solid
+            rgba(110,67,28,.22);
+
+            border-radius: 9px;
+
+            pointer-events: none;
+        }
+
+        .dashboard-card:hover {
+
+            transform:
+                    translateY(-8px);
+
+            box-shadow:
+                    0 25px 50px rgba(0,0,0,.50);
+        }
+
+        .card-icon {
+
+            width: 62px;
+
+            height: 62px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 15px;
+
+            font-size: 31px;
+
+            margin-bottom: 18px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+        .dashboard-card h2 {
+
+            font-family:
+                    Georgia,
+                    "Times New Roman",
+                    serif;
+
+            font-size: 24px;
+
+            margin-bottom: 9px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+        .dashboard-card p {
+
+            color: #70543b;
+
+            font-size: 13px;
+
+            line-height: 1.55;
+
+            margin-bottom: 20px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+        .card-link {
+
+            display: inline-block;
+
+            padding: 9px 17px;
+
+            border-radius: 20px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            position: relative;
+
+            z-index: 2;
+
+            transition: .3s;
+        }
+
+        .card-link:hover {
+
+            transform: translateX(4px);
+        }
+
+        /* =========================
+           CARD COLORS
+        ========================= */
+
+        .books .card-icon {
+
+            background: #e3c49a;
+        }
+
+        .books h2 {
+
+            color: #74370f;
+        }
+
+        .books .card-link {
+
+            background: #74370f;
+        }
+
+        .students .card-icon {
+
+            background: #d6e5d5;
+        }
+
+        .students h2 {
+
+            color: #26613b;
+        }
+
+        .students .card-link {
+
+            background: #26613b;
+        }
+
+        .staff .card-icon {
+
+            background: #dce2d5;
+        }
+
+        .staff h2 {
+
+            color: #45643b;
+        }
+
+        .staff .card-link {
+
+            background: #45643b;
+        }
+
+        .issue .card-icon {
+
+            background: #d5e1ef;
+        }
+
+        .issue h2 {
+
+            color: #205b86;
+        }
+
+        .issue .card-link {
+
+            background: #205b86;
+        }
+
+        .return .card-icon {
+
+            background: #e5d8b9;
+        }
+
+        .return h2 {
+
+            color: #76511f;
+        }
+
+        .return .card-link {
+
+            background: #76511f;
+        }
+
+        .reports .card-icon {
+
+            background: #dfd4e5;
+        }
+
+        .reports h2 {
+
+            color: #604070;
+        }
+
+        .reports .card-link {
+
+            background: #604070;
+        }
+
+        /* =========================
+           BOTTOM QUOTE
+        ========================= */
+
+        .quote {
+
+            margin-top: 45px;
+
+            padding: 25px;
+
+            text-align: center;
+
+            color: #d9c3a1;
+
+            border-top:
+                    1px solid
+                    rgba(224,174,92,.25);
+
+            border-bottom:
+                    1px solid
+                    rgba(224,174,92,.25);
+
+            font-family:
+                    Georgia,
+                    "Times New Roman",
+                    serif;
+
+            font-size: 17px;
+
+            font-style: italic;
+        }
+
+        /* =========================
+           ANIMATIONS
+        ========================= */
+
+        @keyframes fadeDown {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(-20px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+        @keyframes cardAppear {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(25px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+        .dashboard-card:nth-child(1) {
+            animation-delay: .05s;
+        }
+
+        .dashboard-card:nth-child(2) {
+            animation-delay: .10s;
+        }
+
+        .dashboard-card:nth-child(3) {
+            animation-delay: .15s;
+        }
+
+        .dashboard-card:nth-child(4) {
+            animation-delay: .20s;
+        }
+
+        .dashboard-card:nth-child(5) {
+            animation-delay: .25s;
+        }
+
+        .dashboard-card:nth-child(6) {
+            animation-delay: .30s;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media(max-width:950px) {
+
+            .dashboard-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:650px) {
+
+            .navbar {
+
+                padding: 0 20px;
+            }
+
+            .logo {
+
+                font-size: 16px;
+            }
+
+            .admin-label {
+
+                display: none;
+            }
+
+            .container {
+
+                width: 90%;
+
+                padding-top: 35px;
+            }
+
+            .dashboard-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .welcome h1 {
+
+                font-size: 38px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        <span class="logo-icon">
+            📖
+        </span>
+
+        <span>
+            Library Management System
+        </span>
+
+        <span class="admin-label">
+            ADMIN PANEL
+        </span>
+
+    </div>
+
+    <a href="/logout"
+       class="logout">
+
+        Logout
+
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<div class="container">
+
+    <div class="welcome">
+
+        <div class="welcome-small">
+            ADMINISTRATION
+        </div>
+
+        <h1>
+            Welcome, Administrator
+        </h1>
+
+        <p>
+            Manage your library, organize resources,
+            maintain student and staff records,
+            and keep every library operation running smoothly.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         DASHBOARD CARDS
+    ========================= -->
+
+    <div class="dashboard-grid">
+
+
+        <!-- BOOKS -->
+
+        <div class="dashboard-card books">
+
+            <div class="card-icon">
+                📚
+            </div>
+
+            <h2>
+                Manage Books
+            </h2>
+
+            <p>
+                Add, update, delete and search
+                books and manage their available copies.
+            </p>
+
+            <a href="/admin/books"
+               class="card-link">
+
+                Open Books →
+
+            </a>
+
+        </div>
+
+
+        <!-- STUDENTS -->
+
+        <div class="dashboard-card students">
+
+            <div class="card-icon">
+                🎓
+            </div>
+
+            <h2>
+                Manage Students
+            </h2>
+
+            <p>
+                Manage student registration,
+                information and library accounts.
+            </p>
+
+            <a href="/admin/students"
+               class="card-link">
+
+                Open Students →
+
+            </a>
+
+        </div>
+
+
+        <!-- STAFF -->
+
+        <div class="dashboard-card staff">
+
+            <div class="card-icon">
+                👨‍💼
+            </div>
+
+            <h2>
+                Manage Staff
+            </h2>
+
+            <p>
+                Add, update, remove and search
+                library staff members.
+            </p>
+
+            <a href="/admin/staff"
+               class="card-link">
+
+                Open Staff →
+
+            </a>
+
+        </div>
+
+
+        <!-- ISSUE -->
+
+        <div class="dashboard-card issue">
+
+            <div class="card-icon">
+                📖
+            </div>
+
+            <h2>
+                Issue Books
+            </h2>
+
+            <p>
+                Issue books to students and track
+                active library transactions.
+            </p>
+
+            <a href="/admin/issues"
+               class="card-link">
+
+                Issue Book →
+
+            </a>
+
+        </div>
+
+
+        <!-- RETURN -->
+
+        <div class="dashboard-card return">
+
+            <div class="card-icon">
+                ↩️
+            </div>
+
+            <h2>
+                Return Books
+            </h2>
+
+            <p>
+                Process returned books and
+                automatically calculate overdue fines.
+            </p>
+
+            <a href="/admin/returns"
+               class="card-link">
+
+                Return Book →
+
+            </a>
+
+        </div>
+
+
+        <!-- REPORTS -->
+
+        <div class="dashboard-card reports">
+
+            <div class="card-icon">
+                📊
+            </div>
+
+            <h2>
+                Reports
+            </h2>
+
+            <p>
+                View library statistics, issue history,
+                returns, fines and records.
+            </p>
+
+            <a href="/admin/reports"
+               class="card-link">
+
+                View Reports →
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="quote">
+
+        “A library is not just a collection of books;
+        it is a collection of possibilities.”
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

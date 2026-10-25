@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Books - Chinmaya's Library</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            background:
+                    linear-gradient(
+                            rgba(38,20,8,0.58),
+                            rgba(38,20,8,0.58)
+                    ),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=85")
+                    center center / cover fixed no-repeat;
+
+            font-family:
+                    "Segoe UI",
+                    Arial,
+                    sans-serif;
+
+            color: #3f2918;
+        }
+
+        .my-books-container {
+
+            width: 94%;
+
+            max-width: 1250px;
+
+            margin: 0 auto;
+
+            padding: 35px 0 60px;
+        }
+
+        /* HEADER */
+
+        .library-header {
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            rgba(77,45,20,0.97),
+                            rgba(111,70,30,0.97)
+                    );
+
+            border:
+                    1px solid #d4ad68;
+
+            border-radius: 18px;
+
+            padding: 22px 28px;
+
+            margin-bottom: 30px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                    0 10px 30px rgba(0,0,0,0.35);
+        }
+
+        .brand {
+
+            color: #ffe7ad;
+
+            font-family: Georgia, serif;
+
+            font-size: 28px;
+
+            font-weight: bold;
+        }
+
+        .logout-button {
+
+            text-decoration: none;
+
+            color: white;
+
+            background: #9a2f24;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .logout-button:hover {
+
+            background: #7d2019;
+
+            transform: translateY(-2px);
+        }
+
+        /* BACK */
+
+        .back-button {
+
+            display: inline-block;
+
+            margin-bottom: 25px;
+
+            padding: 12px 20px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #75471d,
+                            #9b682d
+                    );
+
+            color: #fff8e7;
+
+            text-decoration: none;
+
+            border-radius: 9px;
+
+            border: 1px solid #d2a65d;
+
+            font-weight: bold;
+
+            box-shadow:
+                    0 5px 12px rgba(0,0,0,0.25);
+
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+
+            transform: translateY(-2px);
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #5e3717,
+                            #835521
+                    );
+        }
+
+        /* TITLE */
+
+        .page-title {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+
+            background:
+                    linear-gradient(
+                            rgba(255,248,231,0.95),
+                            rgba(239,220,184,0.95)
+                    );
+
+            border:
+                    1px solid #c49a5a;
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            box-shadow:
+                    0 10px 25px rgba(0,0,0,0.25);
+        }
+
+        .page-title h1 {
+
+            margin: 0 0 8px;
+
+            font-family: Georgia, serif;
+
+            color: #5a3516;
+
+            font-size: 38px;
+        }
+
+        .page-title p {
+
+            margin: 0;
+
+            color: #755331;
+        }
+
+        /* TABLE */
+
+        .table-container {
+
+            overflow-x: auto;
+
+            background:
+                    linear-gradient(
+                            rgba(255,248,231,0.97),
+                            rgba(242,225,193,0.97)
+                    );
+
+            border:
+                    1px solid #c49a5a;
+
+            border-radius: 18px;
+
+            padding: 20px;
+
+            box-shadow:
+                    0 15px 30px rgba(0,0,0,0.28);
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 950px;
+        }
+
+        thead th {
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #684018,
+                            #8c5b27
+                    );
+
+            color: #fff5dc;
+
+            padding: 15px 12px;
+
+            text-align: center;
+
+            font-family: Georgia, serif;
+
+            border-bottom:
+                    2px solid #cda35d;
+        }
+
+        tbody td {
+
+            padding: 14px 12px;
+
+            text-align: center;
+
+            color: #513b25;
+
+            border-bottom:
+                    1px solid #dec69b;
+        }
+
+        tbody tr {
+
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+
+            background:
+                    rgba(213,178,116,0.18);
+        }
+
+        /* STATUS */
+
+        .issued {
+
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            background:
+                    rgba(166,103,25,0.15);
+
+            color: #945e13;
+
+            font-weight: bold;
+
+            font-size: 12px;
+        }
+
+        .returned {
+
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            background:
+                    rgba(44,126,57,0.15);
+
+            color: #287238;
+
+            font-weight: bold;
+
+            font-size: 12px;
+        }
+
+        .fine {
+
+            color: #a52b2b;
+
+            font-weight: bold;
+        }
+
+        /* EMPTY */
+
+        .empty-message {
+
+            text-align: center;
+
+            padding: 55px 25px;
+
+            background:
+                    linear-gradient(
+                            rgba(255,248,231,0.97),
+                            rgba(242,225,193,0.97)
+                    );
+
+            border:
+                    1px solid #c49a5a;
+
+            border-radius: 18px;
+
+            box-shadow:
+                    0 12px 28px rgba(0,0,0,0.25);
+        }
+
+        .empty-message h2 {
+
+            color: #5a3516;
+
+            font-family: Georgia, serif;
+
+            font-size: 28px;
+        }
+
+        .empty-message p {
+
+            color: #755331;
+        }
+
+        /* FOOTER */
+
+        .library-footer {
+
+            text-align: center;
+
+            margin-top: 35px;
+
+            color: #f4dfb2;
+
+            font-size: 13px;
+        }
+
+        /* ANIMATION */
+
+        .library-header,
+        .page-title,
+        .table-container,
+        .empty-message {
+
+            animation:
+                    fadeUp 0.6s ease;
+        }
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(15px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 650px) {
+
+            .my-books-container {
+
+                width: 94%;
+            }
+
+            .library-header {
+
+                flex-direction: column;
+
+                gap: 15px;
+
+                text-align: center;
+            }
+
+            .brand {
+
+                font-size: 23px;
+            }
+
+            .page-title h1 {
+
+                font-size: 30px;
+            }
+
+            .table-container {
+
+                padding: 12px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="my-books-container">
+
+
+    <div class="library-header">
+
+        <div class="brand">
+            📚 Chinmaya's Library
+        </div>
+
+        <a th:href="@{/logout}"
+           class="logout-button">
+
+            🚪 Logout
+
+        </a>
+
+    </div>
+
+
+    <a th:href="@{/student-dashboard}"
+       class="back-button">
+
+        ← Back to Dashboard
+
+    </a>
+
+
+    <div class="page-title">
+
+        <h1>
+            📚 My Books
+        </h1>
+
+        <p>
+            Books issued to you from the library
+        </p>
+
+    </div>
+
+
+    <div class="table-container"
+         th:if="${myBooks != null and !myBooks.isEmpty()}">
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>Book ID</th>
+
+                <th>Book Title</th>
+
+                <th>Author</th>
+
+                <th>Category</th>
+
+                <th>Issue Date</th>
+
+                <th>Due Date</th>
+
+                <th>Return Date</th>
+
+                <th>Fine</th>
+
+                <th>Status</th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            <tr th:each="book : ${myBooks}">
+
+                <td th:text="${book['book_id']}">
+                    -
+                </td>
+
+                <td th:text="${book['title']}">
+                    -
+                </td>
+
+                <td th:text="${book['author']}">
+                    -
+                </td>
+
+                <td th:text="${book['category']}">
+                    -
+                </td>
+
+                <td th:text="${book['issue_date']}">
+                    -
+                </td>
+
+                <td th:text="${book['due_date']}">
+                    -
+                </td>
+
+                <td th:text="${book['return_date'] != null ? book['return_date'] : 'Not Returned'}">
+                    -
+                </td>
+
+                <td>
+
+                    ₹<span
+                        th:text="${book['fine'] != null ? book['fine'] : 0}">
+                        0
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span
+                            th:if="${book['status'] == 'ISSUED'}"
+                            class="issued">
+
+                        ISSUED
+
+                    </span>
+
+                    <span
+                            th:if="${book['status'] == 'RETURNED'}"
+                            class="returned">
+
+                        RETURNED
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div class="empty-message"
+         th:if="${myBooks == null or myBooks.isEmpty()}">
+
+        <h2>
+            📖 No Books Issued
+        </h2>
+
+        <p>
+            You currently don't have any books issued from the library.
+        </p>
+
+    </div>
+
+
+    <div class="library-footer">
+
+        © 2026 Chinmaya's Library · Student Portal · Knowledge lives here
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

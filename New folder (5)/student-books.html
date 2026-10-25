@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Browse Books - Chinmaya's Library</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* =====================================================
+           REAL LIBRARY / BOOK THEME
+           ===================================================== */
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            background:
+                    linear-gradient(
+                            rgba(38, 20, 8, 0.58),
+                            rgba(38, 20, 8, 0.58)
+                    ),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=85")
+                    center center / cover fixed no-repeat;
+
+            font-family:
+                    "Segoe UI",
+                    Arial,
+                    sans-serif;
+
+            color: #3f2918;
+        }
+
+
+        .student-page {
+
+            width: 92%;
+
+            max-width: 1250px;
+
+            margin: 0 auto;
+
+            padding: 35px 0 60px;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .library-header {
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            rgba(77, 45, 20, 0.97),
+                            rgba(111, 70, 30, 0.97)
+                    );
+
+            border:
+                    1px solid #d4ad68;
+
+            border-radius: 18px;
+
+            padding: 22px 28px;
+
+            margin-bottom: 30px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                    0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+
+        .brand {
+
+            color: #ffe7ad;
+
+            font-family: Georgia, serif;
+
+            font-size: 28px;
+
+            font-weight: bold;
+        }
+
+
+        .logout-button {
+
+            text-decoration: none;
+
+            color: white;
+
+            background: #9a2f24;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+
+        .logout-button:hover {
+
+            background: #7d2019;
+
+            transform: translateY(-2px);
+        }
+
+
+        /* =====================================================
+           BACK BUTTON
+           ===================================================== */
+
+        .back-button {
+
+            display: inline-block;
+
+            margin-bottom: 25px;
+
+            padding: 12px 20px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #75471d,
+                            #9b682d
+                    );
+
+            color: #fff8e7;
+
+            text-decoration: none;
+
+            border-radius: 9px;
+
+            border:
+                    1px solid #d2a65d;
+
+            font-weight: bold;
+
+            box-shadow:
+                    0 5px 12px rgba(0,0,0,0.25);
+
+            transition: 0.3s;
+        }
+
+
+        .back-button:hover {
+
+            transform:
+                    translateY(-2px);
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #5e3717,
+                            #835521
+                    );
+        }
+
+
+        /* =====================================================
+           PAGE TITLE
+           ===================================================== */
+
+        .page-title {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+            background:
+                    linear-gradient(
+                            rgba(255,248,231,0.95),
+                            rgba(239,220,184,0.95)
+                    );
+
+            border:
+                    1px solid #c49a5a;
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            box-shadow:
+                    0 10px 25px rgba(0,0,0,0.25);
+        }
+
+
+        .page-title h1 {
+
+            margin:
+                    0 0 10px;
+
+            font-family:
+                    Georgia, serif;
+
+            font-size: 38px;
+
+            color: #5a3516;
+        }
+
+
+        .page-title p {
+
+            margin: 0;
+
+            color: #755331;
+
+            font-size: 16px;
+        }
+
+
+        /* =====================================================
+           SEARCH SECTION
+           ===================================================== */
+
+        .search-section {
+
+            background:
+                    linear-gradient(
+                            rgba(255,248,231,0.97),
+                            rgba(242,225,193,0.97)
+                    );
+
+            border:
+                    1px solid #c49a5a;
+
+            border-radius: 16px;
+
+            padding: 22px;
+
+            margin-bottom: 30px;
+
+            box-shadow:
+                    0 10px 25px rgba(0,0,0,0.25);
+        }
+
+
+        .search-title {
+
+            text-align: center;
+
+            color: #5a3516;
+
+            font-family:
+                    Georgia, serif;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-bottom: 15px;
+        }
+
+
+        .search-form {
+
+            display: flex;
+
+            gap: 10px;
+
+            max-width: 850px;
+
+            margin: 0 auto;
+        }
+
+
+        .search-input {
+
+            flex: 1;
+
+            padding: 14px 18px;
+
+            border:
+                    2px solid #c49a5a;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            background: #fffdf7;
+
+            color: #4d321b;
+
+            font-size: 15px;
+
+            transition: 0.3s;
+        }
+
+
+        .search-input:focus {
+
+            border-color:
+                    #80511f;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(128,81,31,0.15);
+        }
+
+
+        .search-input::placeholder {
+
+            color: #9b7a54;
+        }
+
+
+        .search-button {
+
+            border: none;
+
+            padding:
+                    13px 24px;
+
+            border-radius: 10px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #684018,
+                            #a06b2d
+                    );
+
+            color: #fff8e7;
+
+            font-weight: bold;
+
+            font-size: 15px;
+
+            cursor: pointer;
+
+            border:
+                    1px solid #d2a65d;
+
+            transition: 0.3s;
+        }
+
+
+        .search-button:hover {
+
+            transform:
+                    translateY(-2px);
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #512f12,
+                            #81501e
+                    );
+
+            box-shadow:
+                    0 6px 15px
+                    rgba(0,0,0,0.25);
+        }
+
+
+        .clear-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding:
+                    13px 20px;
+
+            border-radius: 10px;
+
+            background:
+                    #8d2b23;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            border:
+                    1px solid #b65d53;
+
+            transition: 0.3s;
+        }
+
+
+        .clear-button:hover {
+
+            background:
+                    #6f1e18;
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        /* =====================================================
+           SEARCH RESULT MESSAGE
+           ===================================================== */
+
+        .search-result {
+
+            text-align: center;
+
+            margin:
+                    0 0 25px;
+
+            color: #ffe8b5;
+
+            font-weight: bold;
+
+            font-size: 15px;
+
+            text-shadow:
+                    0 2px 4px rgba(0,0,0,0.5);
+        }
+
+
+        /* =====================================================
+           BOOK GRID
+           ===================================================== */
+
+        .book-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(270px, 1fr)
+                );
+
+            gap: 25px;
+        }
+
+
+        /* =====================================================
+           BOOK CARD
+           ===================================================== */
+
+        .book-card {
+
+            position: relative;
+
+            background:
+                    linear-gradient(
+                            rgba(255,248,231,0.97),
+                            rgba(242,225,193,0.97)
+                    );
+
+            border:
+                    1px solid #c49a5a;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(47,26,9,0.25);
+
+            transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+        }
+
+
+        .book-card:hover {
+
+            transform:
+                    translateY(-8px);
+
+            box-shadow:
+                    0 18px 35px
+                    rgba(35,18,5,0.35);
+        }
+
+
+        .book-icon {
+
+            width: 65px;
+
+            height: 65px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #6c431d,
+                            #a87535
+                    );
+
+            font-size: 31px;
+
+            margin-bottom: 18px;
+
+            box-shadow:
+                    0 6px 14px
+                    rgba(0,0,0,0.2);
+        }
+
+
+        .book-card h2 {
+
+            margin:
+                    0 0 18px;
+
+            font-family:
+                    Georgia, serif;
+
+            font-size: 23px;
+
+            color: #5a3516;
+        }
+
+
+        .book-card p {
+
+            margin:
+                    10px 0;
+
+            color: #654726;
+
+            font-size: 14px;
+        }
+
+
+        .book-card strong {
+
+            color: #4e3016;
+        }
+
+
+        .available {
+
+            margin-top:
+                    18px !important;
+
+            padding: 10px;
+
+            background:
+                    rgba(49,121,54,0.12);
+
+            border-left:
+                    4px solid #317936;
+
+            border-radius: 6px;
+
+            color:
+                    #28652d !important;
+
+            font-weight: bold;
+        }
+
+
+        .unavailable {
+
+            margin-top:
+                    18px !important;
+
+            padding: 10px;
+
+            background:
+                    rgba(164,42,35,0.12);
+
+            border-left:
+                    4px solid #a42a23;
+
+            border-radius: 6px;
+
+            color:
+                    #922820 !important;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           NO RESULTS
+           ===================================================== */
+
+        .empty-message {
+
+            text-align: center;
+
+            padding:
+                    55px 25px;
+
+            background:
+                    linear-gradient(
+                            rgba(255,248,231,0.97),
+                            rgba(242,225,193,0.97)
+                    );
+
+            border:
+                    1px solid #c49a5a;
+
+            border-radius: 18px;
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(0,0,0,0.25);
+        }
+
+
+        .empty-message h2 {
+
+            color: #5a3516;
+
+            font-family:
+                    Georgia, serif;
+        }
+
+
+        .empty-message p {
+
+            color: #755331;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .library-footer {
+
+            margin-top:
+                    45px;
+
+            text-align:
+                    center;
+
+            color:
+                    #f4dfb2;
+
+            font-size:
+                    13px;
+        }
+
+
+        /* =====================================================
+           ANIMATION
+           ===================================================== */
+
+        .book-card,
+        .page-title,
+        .search-section,
+        .library-header {
+
+            animation:
+                    fadeUp 0.6s ease;
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(15px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .student-page {
+
+                width: 94%;
+
+                padding-top:
+                        20px;
+            }
+
+
+            .library-header {
+
+                flex-direction:
+                        column;
+
+                gap: 15px;
+
+                text-align:
+                        center;
+            }
+
+
+            .brand {
+
+                font-size:
+                        23px;
+            }
+
+
+            .page-title h1 {
+
+                font-size:
+                        30px;
+            }
+
+
+            .search-form {
+
+                flex-direction:
+                        column;
+            }
+
+
+            .search-button,
+            .clear-button {
+
+                width: 100%;
+            }
+
+
+            .book-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="student-page">
+
+
+    <!-- HEADER -->
+
+    <div class="library-header">
+
+        <div class="brand">
+
+            📚 Chinmaya's Library
+
+        </div>
+
+
+        <a th:href="@{/logout}"
+           class="logout-button">
+
+            🚪 Logout
+
+        </a>
+
+    </div>
+
+
+    <!-- BACK -->
+
+    <a th:href="@{/student-dashboard}"
+       class="back-button">
+
+        ← Back to Dashboard
+
+    </a>
+
+
+    <!-- TITLE -->
+
+    <div class="page-title">
+
+        <h1>
+            📖 Browse Books
+        </h1>
+
+        <p>
+            Explore the books available in Chinmaya's Library
+        </p>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-section">
+
+        <div class="search-title">
+
+            🔍 Search Library Books
+
+        </div>
+
+
+        <form
+                th:action="@{/student/books}"
+                method="get"
+                class="search-form">
+
+            <input
+                    type="text"
+                    name="search"
+                    class="search-input"
+                    th:value="${search}"
+                    placeholder="Search by book title, author, category or Book ID..."
+                    autocomplete="off">
+
+
+            <button
+                    type="submit"
+                    class="search-button">
+
+                🔍 Search
+
+            </button>
+
+
+            <a
+                    th:href="@{/student/books}"
+                    class="clear-button">
+
+                ✕ Clear
+
+            </a>
+
+        </form>
+
+    </div>
+
+
+    <!-- SEARCH RESULT -->
+
+    <div
+            class="search-result"
+            th:if="${search != null and !search.isEmpty()}">
+
+        Showing results for:
+        "<span th:text="${search}"></span>"
+
+    </div>
+
+
+    <!-- BOOKS -->
+
+    <div
+            class="book-grid"
+            th:if="${books != null and !books.isEmpty()}">
+
+
+        <div
+                class="book-card"
+                th:each="book : ${books}">
+
+
+            <div class="book-icon">
+
+                📖
+
+            </div>
+
+
+            <h2
+                    th:text="${book['title']}">
+
+                Book Title
+
+            </h2>
+
+
+            <p>
+
+                <strong>
+                    Book ID:
+                </strong>
+
+                <span
+                        th:text="${book['book_id']}">
+                </span>
+
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Author:
+                </strong>
+
+                <span
+                        th:text="${book['author']}">
+                </span>
+
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Category:
+                </strong>
+
+                <span
+                        th:text="${book['category']}">
+                </span>
+
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Total Copies:
+                </strong>
+
+                <span
+                        th:text="${book['quantity']}">
+                </span>
+
+            </p>
+
+
+            <p
+                    th:if="${book['available_quantity'] > 0}"
+                    class="available">
+
+                ✓ Available:
+
+                <span
+                        th:text="${book['available_quantity']}">
+                </span>
+
+            </p>
+
+
+            <p
+                    th:if="${book['available_quantity'] <= 0}"
+                    class="unavailable">
+
+                ✕ Currently Unavailable
+
+            </p>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- NO RESULTS -->
+
+    <div
+            class="empty-message"
+            th:if="${books == null or books.isEmpty()}">
+
+        <h2>
+
+            🔎 No Books Found
+
+        </h2>
+
+
+        <p
+                th:if="${search != null and !search.isEmpty()}">
+
+            No books matched your search for
+            "<strong th:text="${search}"></strong>".
+
+        </p>
+
+
+        <p
+                th:if="${search == null or search.isEmpty()}">
+
+            There are currently no books in the library.
+
+        </p>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="library-footer">
+
+        © 2026 Chinmaya's Library · Student Portal · Knowledge lives here
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

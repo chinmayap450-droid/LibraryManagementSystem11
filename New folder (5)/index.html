@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Library Management System</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, "Times New Roman", serif;
+            min-height: 100vh;
+            color: white;
+
+            background:
+                    linear-gradient(
+                            rgba(35, 18, 8, 0.58),
+                            rgba(35, 18, 8, 0.72)
+                    ),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=90")
+                    center / cover fixed;
+
+            overflow-x: hidden;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            height: 75px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            background: rgba(35, 18, 8, 0.70);
+
+            border-bottom: 1px solid rgba(255, 220, 170, 0.25);
+
+            backdrop-filter: blur(8px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            font-size: 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: #f5e4c5;
+            text-decoration: none;
+            font-size: 14px;
+
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffc96b;
+        }
+
+        /* HERO */
+
+        .hero {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 70px 20px;
+        }
+
+        .hero-content {
+            max-width: 850px;
+
+            animation: appear 1s ease;
+        }
+
+        .small-title {
+            color: #e7b866;
+
+            font-size: 16px;
+
+            letter-spacing: 5px;
+
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: clamp(48px, 7vw, 86px);
+
+            line-height: 0.95;
+
+            margin-bottom: 25px;
+
+            color: #fff5df;
+
+            text-shadow:
+                    0 5px 20px rgba(0, 0, 0, 0.65);
+        }
+
+        .description {
+            max-width: 650px;
+
+            margin: auto;
+
+            color: #eadcc7;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            font-size: 17px;
+
+            line-height: 1.7;
+
+            margin-bottom: 35px;
+        }
+
+        .enter-button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 12px;
+
+            padding: 15px 34px;
+
+            border-radius: 30px;
+
+            background: linear-gradient(
+                    135deg,
+                    #e3a63a,
+                    #b96a16
+            );
+
+            color: white;
+
+            text-decoration: none;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            font-weight: 700;
+
+            font-size: 16px;
+
+            box-shadow:
+                    0 10px 30px rgba(0, 0, 0, 0.35);
+
+            transition: 0.3s;
+        }
+
+        .enter-button:hover {
+            transform: translateY(-4px) scale(1.03);
+
+            box-shadow:
+                    0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .quote {
+            margin-top: 35px;
+
+            color: #d9c5a6;
+
+            font-style: italic;
+
+            font-size: 15px;
+        }
+
+        /* BOOK DECORATION */
+
+        .books {
+            position: absolute;
+
+            bottom: 30px;
+            left: 5%;
+
+            display: flex;
+            flex-direction: column;
+
+            opacity: 0.9;
+        }
+
+        .book {
+            height: 13px;
+
+            border-radius: 3px;
+
+            margin-top: 4px;
+
+            box-shadow: 0 4px 8px rgba(0,0,0,.4);
+        }
+
+        .book:nth-child(1) {
+            width: 150px;
+            background: #59331e;
+        }
+
+        .book:nth-child(2) {
+            width: 125px;
+            background: #244c43;
+        }
+
+        .book:nth-child(3) {
+            width: 170px;
+            background: #7c4924;
+        }
+
+        @keyframes appear {
+
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @media(max-width:700px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            .navbar {
+                justify-content: center;
+            }
+
+            .hero {
+                padding: 50px 20px;
+            }
+
+            .description {
+                font-size: 15px;
+            }
+
+            .books {
+                display: none;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <span class="logo-icon">📖</span>
+
+            <span>Library Management System</span>
+
+        </div>
+
+        <div class="nav-links">
+
+            <a href="/">Home</a>
+
+            <a href="/login">Login</a>
+
+        </div>
+
+    </nav>
+
+    <main class="hero">
+
+        <div class="hero-content">
+
+            <div class="small-title">
+                KNOWLEDGE • LEARNING • GROWTH
+            </div>
+
+            <h1>
+                Library<br>
+                Management System
+            </h1>
+
+            <p class="description">
+
+                A smarter way to manage books, students,
+                staff and library resources — all in one place.
+
+            </p>
+
+            <a href="/login"
+               class="enter-button">
+
+                Enter Library
+
+                <span>→</span>
+
+            </a>
+
+            <div class="quote">
+                “A library is where knowledge comes alive.”
+            </div>
+
+        </div>
+
+    </main>
+
+    <div class="books">
+
+        <div class="book"></div>
+        <div class="book"></div>
+        <div class="book"></div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

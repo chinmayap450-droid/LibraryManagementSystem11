@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Staff Login | Library Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: Georgia, "Times New Roman", serif;
+            background:
+                    linear-gradient(
+                            rgba(38, 24, 14, 0.78),
+                            rgba(38, 24, 14, 0.88)
+                    ),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=85")
+                    center center / cover fixed no-repeat;
+
+            color: #3d281b;
+        }
+
+        /* Main page */
+
+        .staff-login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 35px 20px;
+        }
+
+        /* Main card */
+
+        .staff-login-container {
+            width: 100%;
+            max-width: 1100px;
+            min-height: 620px;
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            background: rgba(62, 39, 22, 0.92);
+
+            border: 1px solid rgba(236, 196, 120, 0.5);
+            border-radius: 22px;
+
+            overflow: hidden;
+
+            box-shadow:
+                    0 30px 70px rgba(0, 0, 0, 0.55),
+                    inset 0 0 30px rgba(255, 214, 145, 0.05);
+
+            animation: containerAppear 0.8s ease;
+        }
+
+        /* Left library section */
+
+        .staff-library-section {
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            padding: 55px;
+
+            background:
+                    linear-gradient(
+                            rgba(55, 32, 17, 0.82),
+                            rgba(55, 32, 17, 0.94)
+                    ),
+                    url("https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1200&q=85")
+                    center / cover no-repeat;
+
+            color: #fff7e7;
+        }
+
+        .staff-library-section::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background:
+                    radial-gradient(
+                            circle at 30% 20%,
+                            rgba(238, 190, 105, 0.18),
+                            transparent 35%
+                    );
+
+            pointer-events: none;
+        }
+
+        .library-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .library-icon {
+            font-size: 62px;
+            margin-bottom: 15px;
+
+            animation: floatBook 3s ease-in-out infinite;
+        }
+
+        .library-content h1 {
+            margin: 0 0 15px;
+
+            font-size: clamp(34px, 4vw, 52px);
+            line-height: 1.1;
+
+            color: #f3cf8b;
+
+            text-shadow:
+                    0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .library-content h2 {
+            margin: 0 0 18px;
+
+            font-size: 25px;
+            font-weight: normal;
+
+            color: #fff1d0;
+        }
+
+        .library-content p {
+            max-width: 460px;
+
+            line-height: 1.8;
+            font-size: 16px;
+
+            color: #eadbc5;
+        }
+
+        .library-divider {
+            width: 100px;
+            height: 3px;
+
+            margin: 25px 0;
+
+            background: #d7a94b;
+            border-radius: 20px;
+        }
+
+        .library-features {
+            display: grid;
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .library-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 15px;
+            color: #f3e5cd;
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(214, 166, 80, 0.18);
+            border: 1px solid rgba(232, 190, 103, 0.5);
+
+            color: #f0c76f;
+        }
+
+        /* Login section */
+
+        .staff-form-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 45px;
+
+            background:
+                    linear-gradient(
+                            rgba(247, 232, 203, 0.97),
+                            rgba(235, 214, 177, 0.97)
+                    );
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+
+            padding: 40px 35px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #fff8e9,
+                            #ead4a8
+                    );
+
+            border-radius: 18px;
+
+            border: 1px solid #c69a52;
+
+            box-shadow:
+                    0 15px 35px rgba(75, 46, 22, 0.22),
+                    inset 0 0 25px rgba(255, 255, 255, 0.5);
+
+            animation: cardAppear 0.9s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            width: 75px;
+            height: 75px;
+
+            margin: 0 auto 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #8b5a2b,
+                            #5b371c
+                    );
+
+            color: #f8d58c;
+
+            font-size: 34px;
+
+            border: 3px solid #d8ad62;
+
+            box-shadow:
+                    0 7px 18px rgba(74, 43, 20, 0.3);
+        }
+
+        .login-header h2 {
+            margin: 0 0 8px;
+
+            font-size: 32px;
+
+            color: #5a351b;
+        }
+
+        .login-header p {
+            margin: 0;
+
+            color: #795b3c;
+            font-size: 14px;
+        }
+
+        /* Messages */
+
+        .message {
+            padding: 13px 15px;
+
+            margin-bottom: 18px;
+
+            border-radius: 10px;
+
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+
+            animation: messageAppear 0.4s ease;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #842029;
+
+            border-left: 5px solid #b02a37;
+        }
+
+        .success-message {
+            background: #d1e7dd;
+            color: #0f5132;
+
+            border-left: 5px solid #198754;
+        }
+
+        /* Form */
+
+        .input-group {
+            margin-bottom: 21px;
+        }
+
+        .input-group label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-weight: bold;
+            font-size: 15px;
+
+            color: #56351d;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+
+            left: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            font-size: 18px;
+
+            color: #8c6438;
+
+            pointer-events: none;
+        }
+
+        .input-group input {
+            width: 100%;
+
+            padding: 14px 15px 14px 45px;
+
+            border: 1px solid #bd9557;
+            border-radius: 10px;
+
+            background: rgba(255, 250, 239, 0.9);
+
+            color: #402719;
+
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+
+            outline: none;
+
+            transition: all 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: #a08a6c;
+        }
+
+        .input-group input:focus {
+            border-color: #8a5a24;
+
+            background: #fffdf7;
+
+            box-shadow:
+                    0 0 0 4px rgba(173, 124, 48, 0.15),
+                    0 5px 15px rgba(100, 65, 25, 0.12);
+
+            transform: translateY(-1px);
+        }
+
+        /* Login button */
+
+        .login-button {
+            width: 100%;
+
+            margin-top: 5px;
+
+            padding: 15px;
+
+            border: none;
+            border-radius: 11px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #95652c,
+                            #5d381b
+                    );
+
+            color: #fff5dc;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 17px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow:
+                    0 8px 18px rgba(80, 48, 22, 0.28);
+
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #aa7937,
+                            #6b421e
+                    );
+
+            box-shadow:
+                    0 12px 24px rgba(80, 48, 22, 0.38);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        /* Back button */
+
+        .back-login {
+            display: block;
+
+            margin-top: 22px;
+
+            text-align: center;
+
+            color: #674522;
+
+            text-decoration: none;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            transition: all 0.3s ease;
+        }
+
+        .back-login:hover {
+            color: #9a692c;
+
+            transform: translateX(-3px);
+        }
+
+        /* Decorative books */
+
+        .book-stack {
+            position: absolute;
+
+            right: 35px;
+            bottom: 35px;
+
+            width: 120px;
+            height: 100px;
+
+            opacity: 0.8;
+        }
+
+        .book {
+            position: absolute;
+
+            width: 100px;
+            height: 18px;
+
+            border-radius: 3px;
+
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .book:nth-child(1) {
+            bottom: 0;
+            right: 0;
+
+            background: #9c4d32;
+
+            transform: rotate(-4deg);
+        }
+
+        .book:nth-child(2) {
+            bottom: 19px;
+            right: 8px;
+
+            background: #b68a3d;
+
+            transform: rotate(3deg);
+        }
+
+        .book:nth-child(3) {
+            bottom: 38px;
+            right: 3px;
+
+            background: #315b48;
+
+            transform: rotate(-2deg);
+        }
+
+        /* Animations */
+
+        @keyframes containerAppear {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateX(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes floatBook {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+
+        @media (max-width: 850px) {
+
+            .staff-login-container {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+
+            .staff-library-section {
+                min-height: 390px;
+                padding: 40px;
+            }
+
+            .staff-form-section {
+                padding: 35px 25px;
+            }
+
+            .book-stack {
+                display: none;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .staff-login-page {
+                padding: 15px;
+            }
+
+            .staff-library-section {
+                padding: 30px 25px;
+                min-height: 340px;
+            }
+
+            .library-content h1 {
+                font-size: 36px;
+            }
+
+            .library-content h2 {
+                font-size: 21px;
+            }
+
+            .library-content p {
+                font-size: 14px;
+            }
+
+            .staff-form-section {
+                padding: 25px 15px;
+            }
+
+            .login-card {
+                padding: 30px 22px;
+            }
+
+            .login-header h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="staff-login-page">
+
+    <div class="staff-login-container">
+
+        <!-- LEFT LIBRARY SECTION -->
+
+        <section class="staff-library-section">
+
+            <div class="library-content">
+
+                <div class="library-icon">
+                    📚
+                </div>
+
+                <h1>Library</h1>
+
+                <h2>Staff Portal</h2>
+
+                <div class="library-divider"></div>
+
+                <p>
+                    Welcome to the staff management portal of our
+                    Library Management System. Manage books, students,
+                    issues and returns from one place.
+                </p>
+
+                <div class="library-features">
+
+                    <div class="library-feature">
+                        <span class="feature-icon">📖</span>
+                        <span>Manage Library Books</span>
+                    </div>
+
+                    <div class="library-feature">
+                        <span class="feature-icon">👨‍🎓</span>
+                        <span>Manage Students</span>
+                    </div>
+
+                    <div class="library-feature">
+                        <span class="feature-icon">🔄</span>
+                        <span>Issue & Return Books</span>
+                    </div>
+
+                    <div class="library-feature">
+                        <span class="feature-icon">📋</span>
+                        <span>Maintain Library Records</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="book-stack">
+                <div class="book"></div>
+                <div class="book"></div>
+                <div class="book"></div>
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT LOGIN SECTION -->
+
+        <section class="staff-form-section">
+
+            <div class="login-card">
+
+                <div class="login-header">
+
+                    <div class="login-icon">
+                        👨‍💼
+                    </div>
+
+                    <h2>Staff Login</h2>
+
+                    <p>
+                        Sign in to access the staff dashboard
+                    </p>
+
+                </div>
+
+
+                <!-- ERROR -->
+
+                <div th:if="${error}"
+                     class="message error-message"
+                     th:text="${error}">
+                </div>
+
+
+                <!-- SUCCESS -->
+
+                <div th:if="${success}"
+                     class="message success-message"
+                     th:text="${success}">
+                </div>
+
+
+                <!-- LOGIN FORM -->
+
+                <form action="/staff-login"
+                      method="post">
+
+                    <div class="input-group">
+
+                        <label for="identifier">
+                            Email or Phone
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                👤
+                            </span>
+
+                            <input
+                                    type="text"
+                                    id="identifier"
+                                    name="identifier"
+                                    placeholder="Enter email or phone"
+                                    autocomplete="username"
+                                    required>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                🔐
+                            </span>
+
+                            <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Enter your password"
+                                    autocomplete="current-password"
+                                    required>
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="login-button">
+
+                        🔑 Sign In to Staff Portal
+
+                    </button>
+
+                </form>
+
+
+                <a href="/login"
+                   class="back-login">
+
+                    ← Back to Login Options
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+</body>
+</html>

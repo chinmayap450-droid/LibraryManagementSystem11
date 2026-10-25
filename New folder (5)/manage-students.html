@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students | Library Management System</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --dark: #2d1b0e;
+            --brown: #6b3f1f;
+            --gold: #d4a84f;
+            --cream: #fff8e8;
+            --paper: #f7ecd2;
+            --ink: #352315;
+            --red: #963c32;
+            --green: #47734b;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--ink);
+            background:
+                    linear-gradient(rgba(39,20,8,.72), rgba(39,20,8,.78)),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=85")
+                    center / cover fixed no-repeat;
+        }
+
+        .page {
+            width: min(1500px, 94%);
+            margin: auto;
+            padding: 30px 0 60px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 18px 22px;
+            margin-bottom: 25px;
+            border-radius: 16px;
+            background: rgba(45,27,14,.96);
+            border: 1px solid rgba(212,168,79,.5);
+            box-shadow: 0 12px 35px rgba(0,0,0,.3);
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: #fff3d0;
+            font-size: clamp(25px,4vw,38px);
+        }
+
+        .brand p {
+            margin: 6px 0 0;
+            color: #e8d4aa;
+            font-size: 14px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            padding: 11px 17px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: .25s;
+        }
+
+        .back {
+            background: #6b4324;
+            color: #fff2cc;
+            border: 1px solid #b98a43;
+        }
+
+        .logout {
+            background: #84372e;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(0,0,0,.3);
+        }
+
+        .panel {
+            padding: 25px;
+            margin-bottom: 24px;
+            border-radius: 18px;
+            background: linear-gradient(
+                    rgba(255,248,232,.98),
+                    rgba(247,236,210,.98)
+            );
+            border: 1px solid #cba967;
+            box-shadow: 0 15px 35px rgba(39,22,10,.28);
+            animation: appear .55s ease both;
+        }
+
+        h2 {
+            color: var(--brown);
+            margin-top: 0;
+        }
+
+        h2:after {
+            content: "";
+            display: block;
+            width: 70px;
+            height: 3px;
+            margin-top: 8px;
+            background: var(--gold);
+        }
+
+        .message {
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #e4f2df;
+            color: #315e35;
+            border-left: 5px solid var(--green);
+        }
+
+        .error {
+            background: #f7dfda;
+            color: #8a2f26;
+            border-left: 5px solid var(--red);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: var(--brown);
+        }
+
+        input {
+            width: 100%;
+            min-width: 0;
+            padding: 13px 14px;
+            border: 1px solid #c5a873;
+            border-radius: 9px;
+            background: #fffdf5;
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 15px;
+            outline: none;
+            transition: .25s;
+        }
+
+        input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,168,79,.2);
+        }
+
+        .buttons, .search-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button, .action-link {
+            display: inline-block;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: .25s;
+        }
+
+        button:hover, .action-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(71,42,18,.25);
+        }
+
+        .add { background: var(--brown); color: white; }
+        .update, .select { background: var(--gold); color: #38240f; }
+        .delete { background: var(--red); color: white; }
+        .clear, .view { background: #765b3d; color: white; }
+        .search { background: var(--brown); color: white; }
+
+        .search-box input {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid #d0b77e;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1050px;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 15px 12px;
+            background: #5a351b;
+            color: #ffeab4;
+            text-align: left;
+        }
+
+        td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #dfc99b;
+            background: rgba(255,249,233,.8);
+        }
+
+        tr:hover td { background: #fff1c9; }
+
+        .empty {
+            text-align: center;
+            padding: 25px !important;
+            color: #775f43;
+            font-style: italic;
+        }
+
+        @keyframes appear {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media(max-width:1050px) {
+            .form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+        }
+
+        @media(max-width:600px) {
+            .page { padding-top: 15px; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
+            .panel { padding: 18px; }
+            .search-box { flex-direction: column; }
+            .search-box input { min-width: 0; }
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="topbar">
+        <div class="brand">
+            <h1>👨‍🎓 Manage Students</h1>
+            <p>Student Accounts &amp; Library Registration</p>
+        </div>
+
+        <div class="nav-buttons">
+            <!-- Staff returns to Staff Dashboard; Admin returns to Admin Dashboard -->
+            <a th:href="${session.role == 'STAFF' ? '/staff-dashboard' : '/admin-dashboard'}"
+               class="nav-btn back">
+                ↩ Back to Dashboard
+            </a>
+
+            <a href="/logout" class="nav-btn logout">
+                🚪 Logout
+            </a>
+        </div>
+    </header>
+
+    <div th:if="${success}" class="message success"
+         th:text="${success}"></div>
+
+    <div th:if="${error}" class="message error"
+         th:text="${error}"></div>
+
+    <section class="panel">
+        <h2>🎓 Student Information</h2>
+
+        <form id="studentForm" method="post" action="/admin/students/add">
+
+            <div class="form-grid">
+
+                <div>
+                    <label for="studentId">Student ID</label>
+                    <input type="number" id="studentId" name="studentId"
+                           min="1" placeholder="Enter Student ID" required>
+                </div>
+
+                <div>
+                    <label for="name">Student Name</label>
+                    <input type="text" id="name" name="name"
+                           placeholder="Enter student name" required>
+                </div>
+
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email"
+                           placeholder="Enter email" required>
+                </div>
+
+                <div>
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone"
+                           placeholder="Enter phone number"
+                           inputmode="numeric" required>
+                </div>
+
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password"
+                           placeholder="Enter password" required>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="add">➕ Add Student</button>
+                <button type="button" class="update" onclick="updateStudent()">✏️ Update</button>
+                <button type="button" class="delete" onclick="deleteStudent()">🗑 Delete</button>
+                <button type="button" class="clear" onclick="clearStudentForm()">🧹 Clear</button>
+            </div>
+
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>🔎 Search Students</h2>
+
+        <form action="/admin/students/search" method="get" class="search-box">
+            <input type="text" name="search" th:value="${search}"
+                   placeholder="Search by Student ID, name, phone or email">
+
+            <button type="submit" class="search">🔍 Search</button>
+
+            <a href="/admin/students" class="action-link view">👨‍🎓 View All</a>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>📋 All Students</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Registered</th>
+                    <th>Select</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="student : ${students}">
+                    <td th:text="${student['student_id']}">-</td>
+                    <td th:text="${student['name']}">-</td>
+                    <td th:text="${student['phone']}">-</td>
+                    <td th:text="${student['email']}">-</td>
+                    <td>
+                        <span th:text="${student['password']}">-</span>
+                    </td>
+                    <td th:text="${student['created_at']}">-</td>
+
+                    <td>
+                        <button type="button"
+                                class="select select-student-button"
+                                th:attr="data-id=${student['student_id']},
+                                         data-name=${student['name']},
+                                         data-phone=${student['phone']},
+                                         data-email=${student['email']},
+                                         data-password=${student['password']}">
+                            Select
+                        </button>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(students)}">
+                    <td colspan="7" class="empty">
+                        👨‍🎓 No students found.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".select-student-button")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    document.getElementById("studentId").value = button.dataset.id;
+                    document.getElementById("name").value = button.dataset.name;
+                    document.getElementById("phone").value = button.dataset.phone;
+                    document.getElementById("email").value = button.dataset.email;
+                    document.getElementById("password").value = button.dataset.password;
+
+                    document.getElementById("studentForm").action = "/admin/students/update";
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+                });
+            });
+    });
+
+    function clearStudentForm() {
+        const form = document.getElementById("studentForm");
+
+        form.reset();
+        document.getElementById("studentId").value = "";
+        form.action = "/admin/students/add";
+    }
+
+    function updateStudent() {
+        const studentId = document.getElementById("studentId").value;
+
+        if (!studentId) {
+            alert("Please enter or select a Student ID first.");
+            return;
+        }
+
+        if (!confirm("Update the details for Student ID " + studentId + "?")) {
+            return;
+        }
+
+        const form = document.getElementById("studentForm");
+        form.action = "/admin/students/update";
+        form.submit();
+    }
+
+    function deleteStudent() {
+        const studentId = document.getElementById("studentId").value;
+
+        if (!studentId) {
+            alert("Please enter or select a Student ID first.");
+            return;
+        }
+
+        if (!confirm("Are you sure you want to delete Student ID " + studentId + "?")) {
+            return;
+        }
+
+        const form = document.getElementById("studentForm");
+        form.action = "/admin/students/delete";
+        form.submit();
+    }
+</script>
+
+</body>
+</html>

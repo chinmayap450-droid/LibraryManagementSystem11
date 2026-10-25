@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Staff Dashboard | Chinmaya's Library</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Georgia, "Times New Roman", serif;
+            color: #352315;
+            background:
+                    linear-gradient(rgba(35, 19, 8, 0.76), rgba(35, 19, 8, 0.82)),
+                    url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=85")
+                    center / cover fixed no-repeat;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page {
+            width: min(1250px, 94%);
+            margin: auto;
+            padding: 30px 0;
+            flex: 1;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 24px 28px;
+            margin-bottom: 30px;
+            background: rgba(45, 27, 14, 0.97);
+            border: 1px solid rgba(212, 168, 79, 0.7);
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand h1 {
+            color: #fff0c8;
+            font-size: clamp(26px, 4vw, 38px);
+            margin-bottom: 8px;
+        }
+
+        .brand p {
+            color: #e8d4aa;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .logout {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #84372e;
+            color: white;
+            border: 1px solid #b75e50;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .logout:hover {
+            background: #a3483c;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+        }
+
+        .welcome {
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #cba967;
+            border-radius: 18px;
+            background: linear-gradient(
+                    rgba(255, 248, 232, 0.98),
+                    rgba(247, 236, 210, 0.98)
+            );
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            animation: appear 0.5s ease;
+        }
+
+        .welcome h2 {
+            color: #6b3f1f;
+            font-size: clamp(24px, 3vw, 32px);
+            margin-bottom: 12px;
+        }
+
+        .welcome p {
+            color: #765b3d;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .section-title {
+            color: #fff0c8;
+            font-size: 27px;
+            margin: 35px 0 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 75px;
+            height: 3px;
+            background: #d4a84f;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            position: relative;
+            overflow: hidden;
+            padding: 28px;
+            border-radius: 17px;
+            border: 1px solid #cba967;
+            background: linear-gradient(
+                    145deg,
+                    rgba(255, 248, 232, 0.98),
+                    rgba(239, 222, 185, 0.98)
+            );
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: appear 0.6s ease both;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background: #b8893d;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .card-icon {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #63391c;
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #765b3d;
+            line-height: 1.7;
+            font-size: 15px;
+            margin-bottom: 22px;
+        }
+
+        .card-link {
+            display: inline-block;
+            padding: 12px 19px;
+            background: #6b3f1f;
+            color: #fff2cc;
+            border: 1px solid #9a6c34;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .card-link:hover {
+            background: #8a572b;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px 15px;
+            margin-top: 15px;
+            color: #e8d4aa;
+            background: rgba(45, 27, 14, 0.97);
+            border-top: 1px solid #d4a84f;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            line-height: 1.8;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 20px;
+            }
+
+            .welcome {
+                padding: 22px;
+            }
+
+            .card {
+                padding: 23px;
+            }
+
+            .footer {
+                font-size: 12px;
+                padding: 16px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- HEADER -->
+    <header class="topbar">
+        <div class="brand">
+            <h1>📚 Chinmaya's Library</h1>
+            <p>Staff Management Portal · Your gateway to library operations</p>
+        </div>
+
+        <a th:href="@{/logout}" class="logout">
+            🚪 Logout
+        </a>
+    </header>
+
+    <!-- WELCOME SECTION -->
+    <section class="welcome">
+        <h2>Welcome to the Staff Dashboard</h2>
+        <p>
+            Manage books, maintain student records, issue books, and process returns
+            from one place. Help keep Chinmaya's Library organized and make
+            knowledge accessible to everyone.
+        </p>
+    </section>
+
+    <!-- MANAGEMENT OPTIONS -->
+    <h2 class="section-title">Library Management</h2>
+
+    <div class="dashboard-grid">
+
+        <!-- MANAGE BOOKS -->
+        <article class="card">
+            <div class="card-icon">📚</div>
+            <h3>Manage Books</h3>
+            <p>
+                Add new books, update book details, remove books, and check
+                available copies in the library collection.
+            </p>
+            <a th:href="@{/admin/books}" class="card-link">
+                Manage Books →
+            </a>
+        </article>
+
+        <!-- MANAGE STUDENTS -->
+        <article class="card">
+            <div class="card-icon">🎓</div>
+            <h3>Manage Students</h3>
+            <p>
+                View student records and manage student information
+                according to the permissions configured for staff.
+            </p>
+            <a th:href="@{/admin/students}" class="card-link">
+                Manage Students →
+            </a>
+        </article>
+
+        <!-- ISSUE BOOKS -->
+        <article class="card">
+            <div class="card-icon">📖</div>
+            <h3>Issue Books</h3>
+            <p>
+                Issue available books to registered students and maintain
+                issue dates and due dates.
+            </p>
+            <a th:href="@{/admin/issues}" class="card-link">
+                Issue Books →
+            </a>
+        </article>
+
+        <!-- RETURN BOOKS -->
+        <article class="card">
+            <div class="card-icon">↩️</div>
+            <h3>Return Books</h3>
+            <p>
+                Process book returns, review active issues, and check
+                overdue fines recorded in the system.
+            </p>
+            <a th:href="@{/admin/returns}" class="card-link">
+                Return Books →
+            </a>
+        </article>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    © 2026 Chinmaya's Library · Staff Management Portal · Knowledge lives here
+</footer>
+
+</body>
+</html>
